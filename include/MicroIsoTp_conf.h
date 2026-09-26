@@ -1,10 +1,27 @@
-#ifndef MICROIOSTP_CONF_H
-#define MICROIOSTP_CONF_H
+#ifndef MICROISOTP_CONF_H
+#define MICROISOTP_CONF_H
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
+
+#define MICROISOTP_VERSION "0.0.1"
+
+#define MICROISOTP_FREQ_HZ (1000U)
+
+#define MICROISOTP_BUFFER_SIZE (4096U)
+
+#define MICROISOTP_RX_DEFAULT_BS (0U)
+
+#define MICROISOTP_RX_DEFAULT_STMIN (127U)
+
+// 所有时间单位均为TICK
+#define MICROISOTP_RX_DEFAULT_N_CR_TIMEOUT (1000U)
+
+#define MICROISOTP_RX_DEFAULT_N_AR_TIMEOUT (1000U)
+
+#define MICROISOTP_RX_DEFAULT_N_BR_TIMEOUT (1000U)
 
 #ifdef __cplusplus
 }
