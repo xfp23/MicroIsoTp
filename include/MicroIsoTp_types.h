@@ -1,3 +1,13 @@
+/**
+ * @file MicroIsoTp_types.h
+ * @author https://xfp23.github.io/
+ * @brief
+ * @version 0.1
+ * @date 2026-09-27
+ *
+ * @copyright Copyright (c) 2026
+ *
+ */
 #ifndef MICROISOTP_TYPES_H
 #define MICROISOTP_TYPES_H
 
@@ -57,12 +67,12 @@ typedef enum
 typedef enum
 {
     MICROISOTP_TX_STEP_IDLE, // 空闲
-    MICROISOTP_TX_STEP_SF, // 发个单帧
+    MICROISOTP_TX_STEP_SF,   // 发个单帧
     MICROISOTP_TX_STEP_SF_DONE,
-    MICROISOTP_TX_STEP_FF, // 发送首帧
-    MICROISOTP_TX_STEP_FC, // 等待流控
-    MICROISOTP_TX_STEP_CF, // 发送连续帧
-    MICROISOTP_TX_STEP_CF_DONE, // 等连续帧发送完成
+    MICROISOTP_TX_STEP_FF,       // 发送首帧
+    MICROISOTP_TX_STEP_FC,       // 等待流控
+    MICROISOTP_TX_STEP_CF,       // 发送连续帧
+    MICROISOTP_TX_STEP_CF_DONE,  // 等连续帧发送完成
     MICROISOTP_TX_STEP_COMPLETE, // 发送完成
 } MicroIsoTp_Tx_Step_t;
 
@@ -84,12 +94,12 @@ typedef struct
     uint8_t data[8];
 } MicroIsoTp_FlowControl_t;
 
-typedef struct 
+typedef struct
 {
     uint8_t sn;
 
     uint8_t data[8];
-}MicroIsoTp_CF_t;
+} MicroIsoTp_CF_t;
 
 typedef struct
 {
@@ -119,13 +129,13 @@ typedef struct
 typedef struct
 {
     MicroIsoTp_Tx_Step_t step;
-    uint8_t *buf; 
+    uint8_t *buf;
     size_t tx_len;
 
     uint32_t buf_offset;
     uint32_t buf_remain; // 剩余
 
-    volatile bool reset; // 重置 
+    volatile bool reset; // 重置
 
     uint32_t bs_count; // bs计数
 

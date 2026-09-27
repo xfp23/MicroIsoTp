@@ -1,3 +1,13 @@
+/**
+ * @file MicroIsoTp_tx.c
+ * @author https://xfp23.github.io/
+ * @brief 
+ * @version 0.1
+ * @date 2026-09-27
+ * 
+ * @copyright Copyright (c) 2026
+ * 
+ */
 #include "MicroIsoTp.h"
 
 extern MicroIsoTp_Obj_t MicroIsoTp_Obj;
@@ -34,7 +44,7 @@ void __attribute__((weak)) MicroIsoTp_Tx_Confirmation(void)
 }
 
 // 启动发送
-MicroIsoTp_Status_t MicroIsoTp_Tx_Start(const uint8_t *data, size_t len)
+MicroIsoTp_Status_t MicroIsoTp_Tx_TxStart(const uint8_t *data, size_t len)
 {
     MICROISOTP_CHECK_PTR(data);
 
@@ -218,7 +228,7 @@ void MicroIsoTp_Tx_TimerHandler(void)
 
 // CAN驱动收到一帧数据时调用（Tx方向只需要处理流控帧，不需要地址类型，
 // 因为流控帧永远只会从当前正在进行的这次物理会话上回来）
-void MicroIsoTp_Tx_HandleCanFrame(uint8_t *data, size_t dlc)
+void MicroIsoTp_Tx_HandleCanFrame(const uint8_t *data, size_t dlc)
 {
     if (tx_obj->step != MICROISOTP_TX_STEP_FC)
     {
