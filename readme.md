@@ -148,4 +148,4 @@ Regardless of which addressing a request arrived on, a response should always be
 
 ## License
 
-Add your license here.
+[License](./LICENSE)
