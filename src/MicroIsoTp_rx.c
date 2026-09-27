@@ -115,7 +115,7 @@ void MicroIsoTp_Rx_TimerHandler(void)
 
         if (!rx_obj->FC.External_en) // 外部没预设流控参数的话，用默认值
         {
-            MicroIsoTp_Rx_SetFlowControl(MICROISOTP_FC_CTS, MICROISOTP_RX_DEFAULT_BS, MICROISOTP_RX_DEFAULT_STMIN);
+            MicroIsoTp_Rx_SetFlowControl(MICROISOTP_FS_CTS, MICROISOTP_RX_DEFAULT_BS, MICROISOTP_RX_DEFAULT_STMIN);
             rx_obj->FC.External_en = false; // 把标志位抢过来
         }
         rx_obj->step = MICROISOTP_RX_STEP_FC;
@@ -210,7 +210,7 @@ MicroIsoTp_Status_t MicroIsoTp_Rx_HandleCanFrame(MicroIsoTp_AddrType_t type,cons
 
         if (rx_len < 8 || rx_len >= MICROISOTP_BUFFER_SIZE) // 应该走单帧或者超出缓冲区
         {
-            MicroIsoTp_Rx_SetFlowControl(MICROISOTP_FC_OVERFL, 0, 0);
+            MicroIsoTp_Rx_SetFlowControl(MICROISOTP_FS_OVERFL, 0, 0);
             rx_obj->Exit = true;
             rx_obj->FC.External_en = false;
             rx_obj->step = MICROISOTP_RX_STEP_FC; // 发一个流控告诉对方溢出
@@ -291,11 +291,13 @@ void __attribute__((weak)) MicroIsoTp_Rx_Indication(MicroIsoTp_AddrType_t type, 
 // 构造接收侧要发送的流控帧内容（只构造，不发送）
 void MicroIsoTp_Rx_SetFlowControl(MicroIsoTp_FS_t Fs, uint8_t Bs, uint8_t Stmin)
 {
+    memset(rx_obj->FC.data,0,8);
+    
     rx_obj->FC.Bs = Bs;
-    rx_obj->FC.FC = Fs;
+    rx_obj->FC.Fs = Fs;
     rx_obj->FC.Stmin = Stmin;
 
-    rx_obj->FC.data[0] = ((uint8_t)MICROISOTP_PCI_FC << 4) | rx_obj->FC.FC;
+    rx_obj->FC.data[0] = ((uint8_t)MICROISOTP_PCI_FC << 4) | rx_obj->FC.Fs;
     rx_obj->FC.data[1] = Bs;
     rx_obj->FC.data[2] = Stmin;
 

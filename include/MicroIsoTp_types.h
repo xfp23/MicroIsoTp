@@ -39,9 +39,9 @@ typedef enum
 
 typedef enum
 {
-    MICROISOTP_FC_CTS,    // 继续发送
-    MICROISOTP_FC_WAIT,   // 等待下一次流控
-    MICROISOTP_FC_OVERFL, // 错误分支， 数据超过缓冲区
+    MICROISOTP_FS_CTS,    // 继续发送
+    MICROISOTP_FS_WAIT,   // 等待下一次流控
+    MICROISOTP_FS_OVERFL, // 错误分支， 数据超过缓冲区
 } MicroIsoTp_FS_t;
 
 typedef enum
@@ -57,6 +57,13 @@ typedef enum
 typedef enum
 {
     MICROISOTP_TX_STEP_IDLE, // 空闲
+    MICROISOTP_TX_STEP_SF, // 发个单帧
+    MICROISOTP_TX_STEP_SF_DONE,
+    MICROISOTP_TX_STEP_FF, // 发送首帧
+    MICROISOTP_TX_STEP_FC, // 等待流控
+    MICROISOTP_TX_STEP_CF, // 发送连续帧
+    MICROISOTP_TX_STEP_CF_DONE, // 等连续帧发送完成
+    MICROISOTP_TX_STEP_COMPLETE, // 发送完成
 } MicroIsoTp_Tx_Step_t;
 
 typedef struct
@@ -69,13 +76,20 @@ typedef struct
 
 typedef struct
 {
-    MicroIsoTp_FS_t FC;
+    MicroIsoTp_FS_t Fs;
     uint8_t Bs;
     uint8_t Stmin; // 最小时间
-    bool External_en;
+    volatile bool External_en;
 
     uint8_t data[8];
 } MicroIsoTp_FlowControl_t;
+
+typedef struct 
+{
+    uint8_t sn;
+
+    uint8_t data[8];
+}MicroIsoTp_CF_t;
 
 typedef struct
 {
@@ -98,13 +112,34 @@ typedef struct
     MicroIsoTp_N_Timer_t N_Ar; // n_ar定时器
     MicroIsoTp_N_Timer_t N_Br; // n_br定时器
 
-    uint16_t bs_count;
+    volatile uint16_t bs_count;
 
 } MicroIsoTp_Rx_Obj_t;
 
 typedef struct
 {
     MicroIsoTp_Tx_Step_t step;
+    uint8_t *buf; 
+    size_t tx_len;
+
+    uint32_t buf_offset;
+    uint32_t buf_remain; // 剩余
+
+    volatile bool reset; // 重置 
+
+    uint32_t bs_count; // bs计数
+
+    MicroIsoTp_FlowControl_t FC; // 流控
+
+    MicroIsoTp_CF_t CF; // 连续帧
+
+    uint8_t SF[8];
+    uint8_t FF[8];
+
+    MicroIsoTp_N_Timer_t N_As; // 发送方把一帧（SF/FF/CF）实际发送到总线上所需时间
+    MicroIsoTp_N_Timer_t N_Bs; // 发完FF（或一个Block的CF后）等待对方FC的最长时间
+    MicroIsoTp_N_Timer_t N_Cs; // 发送方两个CF之间的实际发送间隔（应 ≥ 对方要求的STmin
+
 } MicroIsoTp_Tx_Obj_t;
 
 typedef struct
